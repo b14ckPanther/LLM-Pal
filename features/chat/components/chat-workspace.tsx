@@ -52,6 +52,21 @@ export function ChatWorkspace() {
 
   useEffect(() => {
     let mounted = true;
+    let done = false;
+
+    const finish = () => {
+      if (!done && mounted) {
+        done = true;
+        setBootstrapping(false);
+      }
+    };
+
+    const timeout = setTimeout(() => {
+      if (!done) {
+        initializeGuestMode();
+        finish();
+      }
+    }, 5000);
 
     const { data: authSubscription } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
@@ -59,29 +74,38 @@ export function ChatWorkspace() {
           initializeGuestMode();
           setUserId(null);
           setUserEmail(undefined);
-          if (mounted) setBootstrapping(false);
+          finish();
         } else {
-          await bootstrapUser(session.user.id, session.user.email);
-          if (mounted) setBootstrapping(false);
+          try {
+            await bootstrapUser(session.user.id, session.user.email);
+          } finally {
+            finish();
+          }
         }
       },
     );
 
     const init = async () => {
-      const { data: authData } = await supabase.auth.getUser();
-      const user = authData.user;
-      if (!user) {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        const user = authData.user;
+        if (!user) {
+          initializeGuestMode();
+          finish();
+          return;
+        }
+        await bootstrapUser(user.id, user.email);
+      } catch {
         initializeGuestMode();
-        if (mounted) setBootstrapping(false);
-        return;
+      } finally {
+        finish();
       }
-      await bootstrapUser(user.id, user.email);
-      if (mounted) setBootstrapping(false);
     };
 
     void init();
     return () => {
       mounted = false;
+      clearTimeout(timeout);
       authSubscription.subscription.unsubscribe();
     };
   }, [bootstrapUser, initializeGuestMode, supabase]);
