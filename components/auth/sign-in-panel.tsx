@@ -74,16 +74,20 @@ export function SignInPanel({ open, onClose, onSuccess }: SignInPanelProps) {
       }
 
       const user = data.user;
-      if (user) {
+      const session = data.session;
+      if (user && session) {
         finished = true;
         clearTimeout(timeout);
-        try {
-          await ensureUserProfile(supabase, { id: user.id, email: user.email ?? email });
-        } catch {
-          // Profile upsert can fail (RLS, missing table); don't block sign-in
-        }
         reset();
         onSuccess(user.id);
+        void ensureUserProfile(supabase, { id: user.id, email: user.email ?? email }).catch(() => {
+          // Profile upsert can fail (RLS, missing table); non-blocking
+        });
+      } else if (user && !session) {
+        finished = true;
+        clearTimeout(timeout);
+        setLoading(false);
+        setError(t.confirmEmail);
       } else {
         finished = true;
         clearTimeout(timeout);
