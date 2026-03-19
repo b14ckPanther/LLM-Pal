@@ -67,7 +67,14 @@ export function ChatComposer({
   };
 
   return (
-    <div className="border-t border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3 sm:px-6">
+    <div
+      className="sticky bottom-0 z-20 border-t border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3 sm:px-6"
+      style={{
+        paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 12px))",
+        paddingLeft: "max(1rem, env(safe-area-inset-left, 0px))",
+        paddingRight: "max(1rem, env(safe-area-inset-right, 0px))",
+      }}
+    >
       {/* File chips */}
       {files.length > 0 ? (
         <div className="mb-2 flex flex-wrap gap-2">

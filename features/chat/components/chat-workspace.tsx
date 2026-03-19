@@ -123,7 +123,7 @@ export function ChatWorkspace() {
   }
 
   return (
-    <main className="flex h-screen overflow-hidden bg-[var(--bg-base)]">
+    <main className="flex min-h-[100dvh] h-screen overflow-hidden bg-[var(--bg-base)]">
       <ChatSidebar
         supabase={supabase ?? undefined}
         userId={userId ?? undefined}
@@ -149,8 +149,11 @@ export function ChatWorkspace() {
         dir={direction}
         lang={languageCode}
       >
-        {/* Topbar */}
-        <header className="flex h-12 shrink-0 items-center justify-between border-b border-[var(--border)] px-4">
+        {/* Topbar — sticky, always visible, safe-area aware */}
+        <header
+          className="sticky top-0 z-20 flex h-12 shrink-0 items-center justify-between border-b border-[var(--border)] bg-[var(--bg-surface)] px-4"
+          style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0px))" }}
+        >
           <div className="flex items-center gap-2">
             <button
               type="button"
