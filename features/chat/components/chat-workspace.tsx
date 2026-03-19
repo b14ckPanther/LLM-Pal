@@ -61,12 +61,24 @@ export function ChatWorkspace() {
       }
     };
 
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const isConfigured = url && key && !url.includes("placeholder");
+
+    if (!isConfigured) {
+      initializeGuestMode();
+      finish();
+      return () => {
+        mounted = false;
+      };
+    }
+
     const timeout = setTimeout(() => {
       if (!done) {
         initializeGuestMode();
         finish();
       }
-    }, 5000);
+    }, 1500);
 
     const { data: authSubscription } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
