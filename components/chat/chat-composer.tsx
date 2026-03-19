@@ -68,7 +68,7 @@ export function ChatComposer({
 
   return (
     <div
-      className="sticky bottom-0 z-20 border-t border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3 sm:px-6"
+      className="chat-composer-mobile sticky bottom-0 z-20 border-t border-[var(--border)] bg-[var(--bg-surface)] px-4 py-3 sm:px-6"
       style={{
         paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 12px))",
         paddingLeft: "max(1rem, env(safe-area-inset-left, 0px))",

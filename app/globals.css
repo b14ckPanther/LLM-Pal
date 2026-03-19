@@ -172,3 +172,18 @@ body {
     font-size: 16px !important;
   }
 }
+
+/* Mobile: use small viewport height so layout fits when browser UI is visible */
+@media (max-width: 768px) {
+  .mobile-viewport {
+    min-height: 100svh !important;
+    height: 100svh !important;
+  }
+}
+
+/* Mobile: extra bottom padding so chat input sits above Safari/browser toolbars */
+@media (max-width: 768px) {
+  .chat-composer-mobile {
+    padding-bottom: max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.5rem)) !important;
+  }
+}

@@ -123,7 +123,7 @@ export function ChatWorkspace() {
   }
 
   return (
-    <main className="flex min-h-[100dvh] h-screen overflow-hidden bg-[var(--bg-base)]">
+    <main className="mobile-viewport flex min-h-[100dvh] h-screen overflow-hidden bg-[var(--bg-base)]">
       <ChatSidebar
         supabase={supabase ?? undefined}
         userId={userId ?? undefined}
