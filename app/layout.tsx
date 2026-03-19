@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cairo, Heebo, Ubuntu } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/layout/app-providers";
@@ -23,11 +23,16 @@ const heebo = Heebo({
 
 const languageFonts = `${ubuntu.variable} ${cairo.variable} ${heebo.variable}`;
 
+export const viewport: Viewport = {
+  themeColor: "#7c5cff",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "LLM Pal",
   description: "Premium multimodal-ready AI chat workspace.",
   manifest: "/manifest.json",
-  themeColor: "#7c5cff",
   icons: {
     icon: [
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
