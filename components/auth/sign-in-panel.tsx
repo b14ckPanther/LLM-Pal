@@ -47,27 +47,54 @@ export function SignInPanel({ open, onClose, onSuccess }: SignInPanelProps) {
     event.preventDefault();
     setLoading(true);
     setError(null);
+    let finished = false;
 
-    const action =
-      mode === "sign-in"
-        ? supabase.auth.signInWithPassword({ email, password })
-        : supabase.auth.signUp({ email, password });
+    const timeout = setTimeout(() => {
+      if (!finished) {
+        setLoading(false);
+        setError(t.authTimeout);
+      }
+    }, 12000);
 
-    const { data, error: authError } = await action;
-    if (authError) {
+    try {
+      const action =
+        mode === "sign-in"
+          ? supabase.auth.signInWithPassword({ email, password })
+          : supabase.auth.signUp({ email, password });
+
+      const { data, error: authError } = await action;
+      clearTimeout(timeout);
+
+      if (authError) {
+        finished = true;
+        clearTimeout(timeout);
+        setLoading(false);
+        setError(authError.message);
+        return;
+      }
+
+      const user = data.user;
+      if (user) {
+        finished = true;
+        clearTimeout(timeout);
+        try {
+          await ensureUserProfile(supabase, { id: user.id, email: user.email ?? email });
+        } catch {
+          // Profile upsert can fail (RLS, missing table); don't block sign-in
+        }
+        reset();
+        onSuccess(user.id);
+      } else {
+        finished = true;
+        clearTimeout(timeout);
+        setLoading(false);
+        setError(t.confirmEmail);
+      }
+    } catch (err) {
+      finished = true;
+      clearTimeout(timeout);
       setLoading(false);
-      setError(authError.message);
-      return;
-    }
-
-    const user = data.user;
-    if (user) {
-      await ensureUserProfile(supabase, { id: user.id, email: user.email ?? email });
-      reset();
-      onSuccess(user.id);
-    } else {
-      setLoading(false);
-      setError(t.confirmEmail);
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     }
   };
 

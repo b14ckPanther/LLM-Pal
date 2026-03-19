@@ -28,6 +28,7 @@
   "alreadySignedUp": "Already signed up?",
   "signUp": "Sign up",
   "confirmEmail": "Check your email to confirm your account.",
+  "authTimeout": "Request timed out. Check your connection and try again.",
   "cancel": "Cancel",
   "save": "Save"
 }
